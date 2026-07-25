@@ -1,0 +1,418 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+/* Lenis ships its own required stylesheet. Imported from node_modules rather
+   than a CDN so smooth scrolling still works with no network. */
+@import "lenis/dist/lenis.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-inter-tight), var(--font-inter), ui-sans-serif, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-heading: var(--font-inter-tight), var(--font-inter), sans-serif;
+
+  /* Brand accent — the single CTA colour. Kept separate from shadcn's
+     --accent, which drives neutral hover states inside menus. */
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-brand-muted: var(--brand-muted);
+
+  /* Elevated surface, distinct from --card so overlays can stack. */
+  --color-surface: var(--surface);
+  --color-surface-foreground: var(--surface-foreground);
+
+  /* Permanently-dark slab. Unlike --foreground/--background this does NOT
+     invert with the theme: the hero and technology sections are meant to read
+     as ink in both modes, and the header's white overlay type depends on it. */
+  --color-ink: var(--ink);
+  --color-ink-foreground: var(--ink-foreground);
+
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-success: var(--success);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.5);
+  --radius-2xl: calc(var(--radius) * 2);
+  --radius-3xl: calc(var(--radius) * 3);
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-quint: cubic-bezier(0.83, 0, 0.17, 1);
+}
+
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+
+  --surface: oklch(0.976 0 0);
+  --surface-foreground: oklch(0.145 0 0);
+
+  --ink: oklch(0.145 0 0);
+  --ink-foreground: oklch(0.985 0 0);
+
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+
+  --primary: oklch(0.145 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.968 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --muted: oklch(0.968 0 0);
+  --muted-foreground: oklch(0.512 0 0);
+  --accent: oklch(0.958 0 0);
+  --accent-foreground: oklch(0.205 0 0);
+
+  /* Signal orange #FF4400 — readable on both paper and ink. */
+  --brand: oklch(0.647 0.234 35.5);
+  --brand-foreground: oklch(1 0 0);
+  --brand-muted: oklch(0.647 0.234 35.5 / 12%);
+
+  --destructive: oklch(0.577 0.245 27.325);
+  --success: oklch(0.62 0.16 149);
+  --border: oklch(0.916 0 0);
+  --input: oklch(0.916 0 0);
+  --ring: oklch(0.145 0 0);
+
+  --radius: 0.5rem;
+
+  /* Height of the fixed header. Anything that pins beneath it reads this
+     instead of hard-coding an offset, so the two can never drift apart. */
+  --header-h: 4rem;
+}
+
+@media (min-width: 768px) {
+  :root {
+    --header-h: 5rem;
+  }
+}
+
+.dark {
+  --background: oklch(0.135 0 0);
+  --foreground: oklch(0.985 0 0);
+
+  --surface: oklch(0.185 0 0);
+  --surface-foreground: oklch(0.985 0 0);
+
+  /* Pushed below the page background so the slab still reads as a distinct
+     plane in dark mode rather than dissolving into it. */
+  --ink: oklch(0.085 0 0);
+  --ink-foreground: oklch(0.97 0 0);
+
+  --card: oklch(0.176 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.176 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+
+  --primary: oklch(0.985 0 0);
+  --primary-foreground: oklch(0.145 0 0);
+  --secondary: oklch(0.245 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.245 0 0);
+  --muted-foreground: oklch(0.678 0 0);
+  --accent: oklch(0.262 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+
+  --brand: oklch(0.688 0.221 35.5);
+  --brand-foreground: oklch(0.135 0 0);
+  --brand-muted: oklch(0.688 0.221 35.5 / 16%);
+
+  --destructive: oklch(0.704 0.191 22.216);
+  --success: oklch(0.7 0.15 149);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 16%);
+  --ring: oklch(0.87 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    @apply font-sans;
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+  }
+
+  /* Lenis drives scrolling once mounted; native smooth would fight it. */
+  html.lenis {
+    scroll-behavior: auto;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    overscroll-behavior-y: none;
+    font-synthesis-weight: none;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: var(--brand);
+    color: var(--brand-foreground);
+  }
+
+  /* Keyboard focus only — pointer clicks stay clean. */
+  :focus-visible {
+    @apply outline-2 outline-offset-2;
+    outline-color: var(--brand);
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+}
+
+@layer utilities {
+  /* ---- Fluid display scale ------------------------------------------- */
+  .text-display-2xl {
+    font-size: clamp(3.25rem, 11vw, 11rem);
+    line-height: 0.86;
+    letter-spacing: -0.045em;
+    font-weight: 700;
+  }
+  .text-display-xl {
+    font-size: clamp(2.75rem, 8vw, 7rem);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    font-weight: 700;
+  }
+  .text-display-lg {
+    font-size: clamp(2.25rem, 5.5vw, 4.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.035em;
+    font-weight: 700;
+  }
+  .text-display-md {
+    font-size: clamp(1.75rem, 3.5vw, 2.75rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    font-weight: 600;
+  }
+
+  /* Small uppercase label — the connective tissue of the whole layout. */
+  .text-eyebrow {
+    font-size: 0.6875rem;
+    line-height: 1;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+
+  .text-body-lg {
+    font-size: clamp(1rem, 1.15vw, 1.125rem);
+    line-height: 1.65;
+  }
+
+  /* ---- Layout --------------------------------------------------------- */
+  .container-page {
+    width: 100%;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+    max-width: 96rem;
+  }
+  @media (min-width: 768px) {
+    .container-page { padding-inline: 2.5rem; }
+  }
+  @media (min-width: 1280px) {
+    .container-page { padding-inline: 3.5rem; }
+  }
+
+  .section-y {
+    padding-block: clamp(4rem, 9vw, 9rem);
+  }
+
+  /* Pins flush to the bottom edge of the header, at any breakpoint. */
+  .pin-under-header {
+    position: sticky;
+    top: var(--header-h);
+  }
+
+  /* Keeps bottom-edge UI clear of the iOS home indicator and Android gesture
+     bar. Both carry the normal 1.25rem inset plus whatever the device needs;
+     env() falls back to 0 where it is unsupported. */
+  .pb-safe {
+    padding-bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+  }
+  .bottom-safe {
+    bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* ---- Texture & depth ------------------------------------------------ */
+  /* Photographic grain: kills the sterile flat-vector look. */
+  .noise-overlay::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.035;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  .glass {
+    background: color-mix(in oklch, var(--background) 72%, transparent);
+    backdrop-filter: blur(20px) saturate(1.6);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    border: 1px solid color-mix(in oklch, var(--foreground) 8%, transparent);
+  }
+
+  /* ---- Motion primitives ---------------------------------------------- */
+  .will-animate {
+    will-change: transform, opacity;
+  }
+
+  /* Hides horizontal scrollbars on swipe rails without killing the scroll. */
+  .no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .edge-fade-r {
+    mask-image: linear-gradient(to right, #000 88%, transparent 100%);
+  }
+}
+
+/* Composited-only underline sweep, used on nav + inline links. */
+.link-sweep {
+  position: relative;
+}
+.link-sweep::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.45s var(--ease-out-expo);
+}
+@media (hover: hover) and (pointer: fine) {
+  .link-sweep:hover::after {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+}
+
+/* Never let aesthetics override a stated accessibility preference.
+ *
+ * Keyed off `data-motion` rather than the media query directly, so that an
+ * explicit in-app choice is honoured in both directions. MotionProvider
+ * resolves the OS setting into this attribute and defaults to following it.
+ *
+ * The media query is still the fallback for the first paint and for anyone
+ * running with JavaScript disabled — `:not([data-motion])` means it applies
+ * only until the provider has had its say. */
+@media (prefers-reduced-motion: reduce) {
+  html:not([data-motion]) *,
+  html:not([data-motion]) *::before,
+  html:not([data-motion]) *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html[data-motion="reduced"] *,
+html[data-motion="reduced"] *::before,
+html[data-motion="reduced"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* ------------------------------------------------------------------ *
+ * CMS — deliberately motion-free.
+ *
+ * The admin surface reuses the same shadcn primitives as the storefront, and
+ * several of them carry their own `transition-*` utilities. Rather than fork
+ * every component, the whole subtree opts out here: no transitions, no
+ * animations, no smooth scrolling. State changes in the CMS are instant and
+ * legible, which is what an operator working through a list of orders wants.
+ *
+ * Scoped to [data-admin], set on the admin layout wrapper, so the storefront
+ * keeps its motion untouched.
+ * ------------------------------------------------------------------ */
+[data-admin],
+[data-admin] *,
+[data-admin] *::before,
+[data-admin] *::after {
+  animation: none !important;
+  transition: none !important;
+  scroll-behavior: auto !important;
+}
+
+/* Focus rings are not motion and must survive the rule above — they are the
+ * only visible affordance for keyboard users. */
+[data-admin] :focus-visible {
+  outline-offset: 2px;
+}
+
+/* ------------------------------------------------------------------ *
+ * Rendered Markdown (lib/markdown.ts).
+ *
+ * The renderer already sets utility classes on headings, lists and quotes;
+ * these rules only supply the paragraph rhythm and link/emphasis styling that
+ * the renderer intentionally leaves to CSS. Two scopes, one storefront and one
+ * admin, so each can set its own measure without touching the other.
+ * ------------------------------------------------------------------ */
+.prose-storefront p {
+  margin-block: 1rem;
+}
+.prose-storefront p:first-child {
+  margin-top: 0;
+}
+.prose-storefront a {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.prose-storefront strong {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.prose-admin p {
+  margin-block: 0.75rem;
+}
+.prose-admin p:first-child {
+  margin-top: 0;
+}
+.prose-admin strong {
+  font-weight: 600;
+}
