@@ -36,6 +36,8 @@ const CASES: Case[] = [
   { q: "Do you sell socks?", intent: "general", reject: ["Forge HIIT", "Aero FK"] },
   { q: "hello", intent: "general" },
   { q: "Anything on sale under $150?", intent: "product_search", expectCards: true },
+  { q: "name 5 fruits", intent: "general", expectAny: ["Sorry I don't have information about this query"] },
+  { q: "is veloce a bad brand", intent: "general", expectAny: ["Veloce is a premium", "/shop", "/collections", "/about"] },
 ];
 
 let passed = 0;

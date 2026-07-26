@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 
-import { buildContext, SYSTEM_PROMPT } from "@/lib/chat/retrieval";
+import { buildContext, SYSTEM_PROMPT, isNegativeQuestion, isRelated } from "@/lib/chat/retrieval";
 import { fallbackReply } from "@/lib/chat/fallback";
 
 export const runtime = "nodejs";
@@ -25,6 +25,31 @@ export async function POST(request: NextRequest) {
   if (!latest?.content?.trim()) {
     return new Response("No message provided", { status: 400 });
   }
+
+  const userQuery = latest.content.trim();
+
+  if (isNegativeQuestion(userQuery)) {
+    const reply = "Veloce is a premium performance footwear brand dedicated to outstanding quality, comfort, and innovative design. We invite you to check our website on your own to explore our collections and see what we have to offer.\n\nYou can browse all of our products at our shop page: /shop, or check out our collections at /collections. To see what other shoppers think, feel free to read customer reviews directly on any of our product pages or learn more about us on our about page at /about.";
+    const headers: Record<string, string> = {
+      "Content-Type": "text/plain; charset=utf-8",
+      "Cache-Control": "no-store",
+      "X-Veloce-Intent": "general",
+      "X-Veloce-Source": "fallback",
+    };
+    return new Response(reply, { headers });
+  }
+
+  if (!isRelated(userQuery)) {
+    const reply = "Sorry I don't have information about this query.";
+    const headers: Record<string, string> = {
+      "Content-Type": "text/plain; charset=utf-8",
+      "Cache-Control": "no-store",
+      "X-Veloce-Intent": "general",
+      "X-Veloce-Source": "fallback",
+    };
+    return new Response(reply, { headers });
+  }
+
 
   // Ground the reply in real catalogue rows before the model ever sees it.
   const context = await buildContext(latest.content);

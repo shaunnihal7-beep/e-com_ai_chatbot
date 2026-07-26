@@ -297,3 +297,132 @@ Rules, without exception:
 - Recommend at most two products, and say why. When you name one, give its price.
 - Clickable product cards render automatically underneath your reply. Never restate them as a list, and never write a "Product cards:" or "Available products:" heading. Never paste a URL.
 - State only what the FACTS say. Do not speculate about where a parcel is, when it will arrive, or what a customer should do next unless the FACTS say it.`;
+
+export function isNegativeQuestion(message: string): boolean {
+  const msg = message.toLowerCase();
+
+  const negativeKeywords = [
+    "bad",
+    "terrible",
+    "worst",
+    "suck",
+    "trash",
+    "garbage",
+    "scam",
+    "fake",
+    "ugly",
+    "poor",
+    "hate",
+    "uncomfortable",
+    "horrible",
+    "dislike",
+    "waste",
+    "broken",
+    "defect",
+    "fail",
+    "useless",
+    "cheap",
+  ];
+
+  const hasNegativeKeyword = negativeKeywords.some((keyword) => {
+    const regex = new RegExp("\\b" + keyword + "(s|d|y|ing)?\\b", "i");
+    return regex.test(msg);
+  });
+
+  if (!hasNegativeKeyword) {
+    return false;
+  }
+
+  const targetKeywords = [
+    "veloce",
+    "brand",
+    "shoe",
+    "boot",
+    "sneaker",
+    "trainer",
+    "product",
+    "service",
+    "shipping",
+    "delivery",
+    "quality",
+    "fit",
+    "size",
+    "you",
+    "this",
+    "they",
+    "item",
+  ];
+
+  const hasTargetKeyword = targetKeywords.some((target) => {
+    const regex = new RegExp("\\b" + target + "s?\\b", "i");
+    return regex.test(msg);
+  });
+
+  return hasTargetKeyword;
+}
+
+export function isRelated(message: string): boolean {
+  const msg = message.toLowerCase();
+
+  // 1. Order status patterns
+  if (/\bvlc-\d+\b/i.test(msg)) return true;
+  if (/\b(order status|my orders?|track(ing)?)\b/i.test(msg)) return true;
+  if (/where.{0,15}\b(order|parcel|package|delivery)\b/i.test(msg)) return true;
+
+  // 2. Check if there are any match signals from SIGNALS
+  const signalsPatterns = [
+    /\b(returns?|refunds?|exchanges?|money back)\b|send.{0,10}back/i,
+    /\b(ship|shipping|deliver(y|ed)?|postage|dispatch|courier)\b/i,
+    /\bhow long.{0,20}(take|arrive|deliver)/i,
+    /\b(true to size|size guide|sizing|fits?|fitting|narrow|wide|width|half size)\b/i,
+    /\b(what|which|whats|what's) size\b/i,
+    /\bruns? (big|small|large|narrow|wide)\b/i,
+    /\bsizes?\b/i,
+    /\b(recommend|suggest|looking for|show me|any good|best|top)\b/i,
+    /\b(firm ground|soft ground|high top|mid top|running|training|football|soccer|basketball|marathon|gym|lifting)\b/i,
+    /\b(under|below|less than|cheaper than|up to|budget|around)\s*\$?\s*\d+/i,
+    /\b(shoes?|boots?|trainers?|sneakers?|cleats?|kicks)\b/i,
+  ];
+
+  if (signalsPatterns.some((pattern) => pattern.test(msg))) {
+    return true;
+  }
+
+  // 3. Other Veloce/greeting/store related terms
+  const relatedTerms = [
+    /\bveloce\b/i,
+    /\bhi\b/i,
+    /\bhello\b/i,
+    /\bhey\b/i,
+    /\bhelp\b/i,
+    /\bwho are you\b/i,
+    /\bwhat (can|do) you do\b/i,
+    /\bassistant\b/i,
+    /\bsupport\b/i,
+    /\bcustomer\b/i,
+    /\bshop\b/i,
+    /\bstore\b/i,
+    /\bbuy\b/i,
+    /\bprice\b/i,
+    /\bcost\b/i,
+    /\bcatalog\b/i,
+    /\bwarranty\b/i,
+    /\bguarantee\b/i,
+    /\babout\b/i,
+    /\b(sell|sold|socks?|apparel|clothing|gear|accessories?)\b/i,
+    /\b(backpacks?|bags?|items?|products?)\b/i,
+    /\b(compare|better|which|waterproof|dimensions?)\b/i,
+    /\b(stock|available|inventory|back)\b/i,
+    /\b(discount|coupon|save\d*|checkout|cart|add)\b/i,
+    /\b(internationally|packages?|parcels?|human)\b/i,
+    /\b(credit|card|saved|security|privacy)\b/i,
+    /@/i,
+  ];
+
+  if (relatedTerms.some((pattern) => pattern.test(msg))) {
+    return true;
+  }
+
+  return false;
+}
+
